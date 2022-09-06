@@ -1,0 +1,127 @@
+<template>
+  <div class="container">
+    <h2 class="text-center mt-5">my Vue Todo-App</h2>
+    <!-- input    -->
+    <div class="d-flex">
+      <input v-model="task" type="text" placeholder="enter TAsk " class="form-control" />
+      <button @click="submitTask" class="btn btn-warning rounded-0">Submit</button>
+    </div>
+    <!-- table  -->
+    <table class="table table-bordered mt-5">
+      <thead>
+        <tr>
+          <th scope="col">Task</th>
+          <th scope="col">Status</th>
+          <th scope="col">Time</th>
+          <th scope="col">completedDate</th>
+          <th scope="col">#Upated</th>
+          <th scope="col">#deleted</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(task,index) in tasks" :key="index">
+          <td scope="row">
+            <span :class="{'finished' : task.status==='finished'} " >
+            {{task.name}}
+            </span>
+            </td>
+          <td><span @click="changeStatus(index)" class="pointer">
+            {{ firstCharUpper(task.status) }}
+            </span>
+            </td>
+          <td>{{task.time}}</td>
+          <td>{{task.completedDate}} </td>
+          <td>
+            <div class="text-center" @click="editTask(index)">
+              <span class="fa fa-pen"> </span>
+            </div>
+          </td>
+          <td>
+            <div class="text-center" @click="deleteTask(index)">
+              <span class="fa fa-trash"> </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  data() {
+  return {
+   task :'',
+   editedTask :null,
+   availableStatus : ['pending','finished'],
+   tasks : [
+     
+      {
+        name : ' js ',
+        status : 'pending',
+        time : 1,
+        completedDate : '2020-02-01'
+      },
+       {
+        name : 'vue',
+        status : 'pending',
+        time : 32,
+        completedDate: '2020-02-01'
+      }, 
+      {
+        name : 'vue-js',
+        status : 'pending',
+        time : 2,
+        completedDate: '2020-02-01'
+      }
+    ]
+  }
+}, methods :{
+    submitTask() {
+         if(this.task.length===0 ) return ;
+         if(this.editedTask ===null ) {
+         this.tasks.push( {
+           name:this.task,
+           status :'pending',
+           time : '1',
+           completedDate :'2022-03-02'
+         });
+         }
+         else {
+           this.tasks[this.editedTask].name = this.task;
+           this.editedTask=null;
+         }
+        this.task = '';
+    },
+deleteTask(index) {
+ this.tasks.splice(index,1);
+},
+editTask(index) {
+  this.task = this.tasks[index].name;
+  this.editedTask= index;
+},
+changeStatus(index) {
+    let newIndex = this.availableStatus.indexOf(this.tasks[index].status);
+    if(++newIndex > 1) newIndex =0;
+    this.tasks[index].status=this.availableStatus[newIndex];
+},
+firstCharUpper(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+}
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped >
+.pointer {
+  cursor: pointer;
+}
+.finished {
+   text-decoration: line-through;
+}
+</style>
